@@ -1,0 +1,316 @@
+<!doctype html>
+<html ng-app="myApp">
+<head>
+    <script src="angular.js"></script>
+    <script src="jquery-2.1.4.js"></script>
+
+    <style type="text/css">
+
+        span{
+            border-radius: 5px;
+            margin: 3px;
+            padding: 5px;
+            background-color: #c0c0c0;
+            border: 3px ridge;
+            display: inline-block;
+            cursor: pointer;
+        }
+
+        p{
+            border: 4px outset steelblue;
+            padding: 3px;
+            color: white;
+            background-color: skyblue;
+            font-size: 30px;
+            font-weight: bold;
+        }
+
+    </style>
+</head>
+
+<body>
+
+<!--
+<div ng-controller="SomeController">
+    {{ someModel.someProperty }}
+    <button ng-click="someAction()">Communicate</button>
+</div>
+-->
+
+<!--
+<div ng-controller="SomeController">
+    {{ someBareValue }}
+    <button ng-click="someAction()">Communicate to child</button>
+    <div ng-controller="ChildController">
+        {{ someBareValue }}
+        <button ng-click="childAction()">Communicate to parent</button>
+    </div>
+</div>
+-->
+
+<div ng-controller="SomeController">
+    {{ someModel.someValue }}
+    <button ng-click="someAction()">Communicate to child</button>
+    <div ng-controller="ChildController">
+        {{ someModel.someValue }}
+        <button ng-click="childAction()">Communicate to parent</button>
+    </div>
+</div>
+
+<form ng-submit="submit()"
+      ng-controller="FormController">
+    Enter text and hit enter:
+    <input type="text"
+           ng-model="person.name"
+           name="person.name" />
+    <input type="submit"
+           <!--name="person.name"-->
+           value="Submit" />
+    <code>people={{people}}</code>
+    <ul ng-repeat="(index, object) in people">
+        <li>{{ object.name }}</li>
+    </ul>
+</form>
+
+<div ng-app="myApp"
+     ng-init="someProperty = 'some data'"></div>
+<div ng-init="siblingProperty='moredata'">
+    Inside Div Two: {{ aThirdProperty }}
+    <div ng-init="aThirdProperty = 'data for 3rd property'"
+         ng-controller="SomeCtrl">
+        Inside Div Three: {{ aThirdProperty }}
+        <div ng-controller="SecondController">
+            Inside Div Four: {{ aThirdProperty }}
+        </div>
+    </div>
+</div>
+
+<div ng-controller='MainController'>
+    Outside myDirective: {{ myProperty }}
+    <div my-direct ng-init="myProperty = 'wow, this is cool'">
+        Inside myDirective: {{ myProperty }}
+    </div>
+</div>
+
+<div ng-init="myProperty='wow,thisiscool'">
+    Surrounding scope: {{ myProperty }}
+    <div my-inherit-scope-directive></div>
+    <div my-directive-scope></div>
+</div>
+
+<div ng-app="myApp">
+    <div ng-controller="MyController">
+        <button ng-click="sayHello()">Hello</button>
+    </div>
+</div>
+
+<br>
+<div ng-controller="Counter">
+    <span>Change Amount: </span>
+    <input type="number" ng-model="change"><hr>
+    <span>Starting Value: </span>
+    {{start}}
+    <br>
+    <span>Current Value: </span>
+    {{current}}
+    <button ng-click='inc()'>+</button>
+    <button ng-click='dec()'>-</button>
+    <span>Difference: </span>
+    {{difference}}<hr>
+</div>
+<br>
+
+<p>Card and Suit: </p>
+<input type="text">
+<span>&#9824;</span>
+<span>&#9827;</span>
+<span>&#9829;</span>
+<span>&#9830;</span>
+<br>
+
+<!--
+<br>
+<div ng-controller="httpApplyCtrl">
+    <input type="submit" value="Click" ng-click="">
+    <br>
+    {{weather}}
+</div>
+-->
+
+<script type="text/javascript">
+  /*  angular.module('myApp', [])
+        .controller('SomeController', function($scope) {
+//创建模型
+            $scope.someModel = {
+// 添加属性
+                someProperty: 'hello computer'
+            }
+// 设置$scope自身的操作
+            $scope.someAction = function() {
+                $scope.someModel.someProperty = 'hello human';
+            };
+        });
+        */
+
+ /* angular.module('myApp', [])
+      .controller('SomeController', function($scope) {
+// 反模式，裸值
+          $scope.someBareValue = 'hello computer';
+// 设置 $scope 本身的操作，这样没问题
+          $scope.someAction = function() {
+// 在SomeController和ChildController中设置{{ someBareValue }}
+              $scope.someBareValue = 'hello human, from parent';
+          };
+      })
+      .controller('ChildController', function($scope) {
+          $scope.childAction = function() {
+// 在ChildController中设置{{ someBareValue }}
+              $scope.someBareValue = 'hello human, from child';
+          };
+      });
+      */
+
+  angular.module('myApp', [])
+      .controller('SomeController', function($scope) {
+// 最佳实践，永远使用一个模式
+          $scope.someModel = {
+              someValue: 'hello computer'
+          }
+          $scope.someAction = function() {
+              $scope.someModel.someValue = 'hello human, from parent';
+          };
+      })
+      .controller('ChildController', function($scope) {
+          $scope.childAction = function() {
+              $scope.someModel.someValue = 'hello human, from child';
+          };
+      })
+      .controller('FormController',function($scope) {
+          $scope.person = {
+              name: null
+          };
+          $scope.people = [];
+          $scope.submit = function() {
+              if ($scope.person.name) {
+                  $scope.people.push({name: $scope.person.name});
+                  $scope.person.name = '';
+              }
+          };
+      })
+      .controller('SomeCtrl', function($scope) {
+// 可以留空，但需要被定义
+      })
+      .controller('SecondController', function($scope) {
+// 同样可以留空
+      })
+      .directive('myDirective', function() {
+          return {
+              restrict: 'A',
+              scope: true
+          };
+      })
+      .controller('MainController', function($scope) {
+      })
+      .directive('myDirect', function() {
+          return {
+              restrict: 'A',
+              scope: {},
+              priority: 100,
+              template: '<div>Inside myDirective {{ myProperty }}</div>'
+          };
+      })
+      .directive('myDirectiveScope', function() {
+          return {
+              restrict: 'A',
+              template: 'Inside myDirective, isolate scope: {{ myProperty }}',
+              scope: {}
+          };
+      })
+      .directive('myInheritScopeDirective', function() {
+          return {
+              restrict: 'A',
+              template: 'Inside myDirective, isolate scope: {{ myProperty }}',
+              scope: true
+          };
+      })
+      .factory('greeter', function() {
+          return {
+              greet: function(msg) {alert(msg);}
+          }
+      })
+      .controller('MyController',
+          function($scope, greeter) {
+              $scope.sayHello = function() {
+                  greeter.greet("Hello!");
+              };
+          })
+      .value('start',200)
+      .controller('Counter',['$scope','start',function ($scope,start) {
+          $scope.start=start;
+          $scope.current=start;
+          $scope.difference=0;
+          $scope.change=1;
+          $scope.inc=function () {
+              $scope.current += $scope.change;
+              $scope.calcDiff();
+          };
+          $scope.dec=function () {
+              $scope.current -= $scope.change;
+              $scope.calcDiff();
+          };
+          $scope.calcDiff=function () {
+              $scope.difference=$scope.current-$scope.start;
+          };
+      }]);
+
+
+  /*
+      .controller('httpApplyCtrl',function ($scope) {
+          var weatherUrl="http://api.openweathermap.org/data/2.5/weather"+"?q=NewYork,NY";
+          $scope.weather="Loading...";
+
+          $scope.getNYWeather=function () {
+              $.get(weatherUrl,function () {
+                  $scope.weather=data;
+                  $scope.$apply();
+              });
+          };
+
+          setTimeout(function () {
+              $scope.getNYWeather();
+          },0);
+      });
+*/
+
+
+/*
+  function writeMe() {
+      document.write(document.me);
+  }
+  document.me="AA BB";
+  document.writeMe=writeMe;
+  document.writeMe();
+
+
+  function inputHandler(e) {
+      var chr=String.fromCharCode(e.charCode);
+      $("p").append(chr);
+  }
+  function spanHandler(e) {
+      var chrCode=e.target.innerHTML.charCodeAt(0);
+      $("input").trigger({'type':'keypress', 'charCode':'chrCode'});
+  }
+  $(document).ready(function () {
+      $("input").keypress(function (e) {
+          inputHandler(e)
+      });
+      $("span").click(function (e) {
+          spanHandler(e)
+      });
+  });
+*/
+
+</script>
+
+</body>
+</html>

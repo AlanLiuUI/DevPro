@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html ng-app="manipulateArrayA" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manipulating Array A</title>
+    <script src="angular.js"></script>
+
+    <script>
+        angular.module('manipulateArrayA',[])
+            .controller('manipuArrA',function ($scope) {
+                $scope.requests=[];
+                for (var i=0;i<50;++i){
+                    $scope.requests.push({
+                        done:(i%3==0),
+                        name:""+i,
+                        time:(i-25)*(i-25)
+                    });
+                }
+            });
+    </script>
+</head>
+<body>
+
+<div ng-controller="manipuArrA">
+    <div ng-repeat="request in requests | filter:{'done':false} | orderBy:'-time' | limitTo:10">
+        {{request.name}}
+    </div>
+</div>
+
+</body>
+</html>

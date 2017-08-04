@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html ng-app="myEvent" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>angKeyEvent</title>
+</head>
+<body>
+
+<div ng-controller="keyEvent">
+    <h2>Key Event</h2>
+    <input type="text" ng-keydown="keyState='Pressed'" ng-keyup="keyPressed($event)"><hr>
+
+    Keyboard State:<br>
+    {{keyState}}<hr>
+
+    Last Key: <br>
+    {{keyInfo|json}}<hr>
+
+    Stored String: <br>
+    {{storedString}}<br>
+
+    Recorded Key Strokes: <br>
+    {{keyStrokes}}
+</div>
+
+<script src="angular.js"></script>
+<script src="angKeyEvent.js"></script>
+</body>
+</html>

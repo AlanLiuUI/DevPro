@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html ng-app="manipulArrayB" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Manipulate Arr B</title>
+    <script src="angular.js"></script>
+
+    <script>
+        angular.module('manipulArrayB',[])
+            .controller('manipulArrB',function ($scope) {
+                $scope.countries=[
+                    {name:"Germany"},
+                    {name:"Australia"},
+                    {name:"Norway"},
+                    {name:"USA"},
+                    {name:"Sweden"},
+                    {name:"Austria"}
+                ];
+            })
+            .filter('hardcodeFirst',function () {
+                return function (arr,field,val) {
+                    var first=null;
+                    for (var i=0;i<arr.length;++i){
+                        if (arr[i].field==val){
+                            first=i;
+                            break;
+                        }
+                    }
+
+                    if (!first){
+                        return arr;
+                    }
+
+                    var firstEl=arr[first];
+                    arr.splice(first,0);
+                    arr.unshift(firstEl);
+
+                    return arr;
+                };
+            });
+    </script>
+</head>
+<body>
+
+<div ng-controller="manipulArrB">
+    <select ng-model="country" ng-options="country.name for country in countries | orderBy:name | hardcodeFirst:'name':'USA' "></select>
+    <br>{{country.name}}
+</div>
+
+</body>
+</html>
